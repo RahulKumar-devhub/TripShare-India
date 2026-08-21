@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TripShare India — Events, Bookings &amp; Travel Companions</title>
+<meta name="description" content="Find Indian events, book tickets, meet travel companions, and split trip expenses." />
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== LOADING SCREEN ===================== -->
+<div id="loadingScreen" class="loading-screen">
+  <div class="loader-logo"><i class="fa-solid fa-plane-departure"></i></div>
+  <p class="loader-text">TripShare India</p>
+  <div class="loader-bar"><span></span></div>
+</div>
+
+<!-- ===================== TOAST CONTAINER ===================== -->
+<div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+<!-- ===================== NAVBAR ===================== -->
+<header class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#" class="brand" data-nav="home">
+      <span class="brand-icon"><i class="fa-solid fa-plane-departure"></i></span>
+      <span class="brand-text">TripShare <span class="accent">India</span></span>
+    </a>
+
+    <nav class="nav-links" id="navLinks">
+      <button class="nav-link active" data-nav="home"><i class="fa-solid fa-house"></i> Home</button>
+      <button class="nav-link" data-nav="explore"><i class="fa-solid fa-magnifying-glass-location"></i> Explore Events</button>
+      <button class="nav-link auth-only" data-nav="bookings"><i class="fa-solid fa-ticket"></i> My Bookings</button>
+      <button class="nav-link auth-only" data-nav="favourites"><i class="fa-solid fa-heart"></i> Favourites</button>
+      <button class="nav-link auth-only" data-nav="expenses"><i class="fa-solid fa-calculator"></i> Expense Splitter</button>
+      <button class="nav-link auth-only" data-nav="travelbuddy"><i class="fa-solid fa-route"></i> Find Travel Buddy</button>
+      <button class="nav-link admin-only" data-nav="admin"><i class="fa-solid fa-user-shield"></i> Admin</button>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="icon-btn guest-only" id="btnLoginNav" title="Login"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+      <div class="profile-chip auth-only" id="profileChip">
+        <span class="avatar-initials" id="navAvatar">U</span>
+        <span id="navUserName">User</span>
+        <i class="fa-solid fa-chevron-down"></i>
+        <div class="profile-dropdown" id="profileDropdown">
+          <button data-nav="profile"><i class="fa-solid fa-id-card"></i> Profile</button>
+          <button id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+        </div>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- ===================== HOME / HERO ===================== -->
+  <section class="view" id="view-home">
+    <div class="hero">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <span class="eyebrow"><i class="fa-solid fa-sparkles"></i> India's social event &amp; travel companion app</span>
+        <h1>Book the event.<br>Find your travel gang.<br><span class="accent">Split the bill.</span></h1>
+        <p>TripShare India connects you with concerts, festivals, and getaways across the country — and with fellow travellers heading to the same place.</p>
+        <div class="hero-cta">
+          <button class="btn btn-primary" data-nav="explore"><i class="fa-solid fa-compass"></i> Explore Events</button>
+          <button class="btn btn-ghost" id="btnHeroSignup"><i class="fa-solid fa-user-plus"></i> Create free account</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="home-panel">
+      <div class="stats-strip">
+        <div class="stat-card"><i class="fa-solid fa-calendar-check"></i><h3 id="statEvents">12+</h3><p>Live events</p></div>
+        <div class="stat-card"><i class="fa-solid fa-city"></i><h3>10</h3><p>Indian cities</p></div>
+        <div class="stat-card"><i class="fa-solid fa-users"></i><h3 id="statUsers">1.2K+</h3><p>Travellers matched</p></div>
+        <div class="stat-card"><i class="fa-solid fa-star"></i><h3>4.6★</h3><p>Average rating</p></div>
+      </div>
+
+      <div class="section-heading">
+        <h2>Trending this month</h2>
+        <button class="link-btn" data-nav="explore">See all <i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+      <div class="event-grid" id="homeEventGrid"></div>
+    </div>
+  </section>
+
+  <!-- ===================== EXPLORE EVENTS ===================== -->
+  <section class="view" id="view-explore">
+    <div class="section-heading"><h2><i class="fa-solid fa-magnifying-glass-location"></i> Explore events</h2></div>
+
+    <div class="filter-bar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Search by event title or city...">
+      </div>
+      <select id="cityFilter" class="input-sm" aria-label="Filter by city">
+        <option value="">All cities</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Mumbai">Mumbai</option>
+        <option value="Jaipur">Jaipur</option>
+        <option value="Chandigarh">Chandigarh</option>
+        <option value="Amritsar">Amritsar</option>
+        <option value="Rishikesh">Rishikesh</option>
+        <option value="Kochi">Kochi</option>
+        <option value="Bengaluru">Bengaluru</option>
+        <option value="Goa">Goa</option>
+        <option value="Pune">Pune</option>
+      </select>
+      <input type="date" id="dateFilter" class="input-sm" aria-label="Filter by date">
+      <select id="sortSelect" class="input-sm" aria-label="Sort events">
+        <option value="date">Date: soonest</option>
+        <option value="price_asc">Price: low to high</option>
+        <option value="price_desc">Price: high to low</option>
+        <option value="rating">Rating: highest</option>
+      </select>
+      <button class="btn btn-outline" id="btnClearFilters"><i class="fa-solid fa-filter-circle-xmark"></i> Clear</button>
+    </div>
+
+    <div class="filter-bar-secondary">
+      <div class="price-range-box">
+        <label>Price range</label>
+        <div class="price-inputs">
+          <input type="number" id="priceMin" min="0" placeholder="Min ₹">
+          <span>–</span>
+          <input type="number" id="priceMax" min="0" placeholder="Max ₹">
+        </div>
+      </div>
+      <label class="toggle-check">
+        <input type="checkbox" id="freeOnlyToggle"> Free entry only
+      </label>
+      <label class="toggle-check">
+        <input type="checkbox" id="fillingFastToggle"> Filling fast (&lt;20% seats left)
+      </label>
+      <div class="view-toggle">
+        <button class="view-toggle-btn active" id="btnGridView" title="Grid view"><i class="fa-solid fa-grip"></i></button>
+        <button class="view-toggle-btn" id="btnListView" title="List view"><i class="fa-solid fa-list"></i></button>
+      </div>
+    </div>
+
+    <div class="category-bar" id="categoryBar">
+      <button class="chip active" data-cat="">All</button>
+      <button class="chip" data-cat="Movies"><i class="fa-solid fa-film"></i> Movies</button>
+      <button class="chip" data-cat="Concerts"><i class="fa-solid fa-music"></i> Concerts</button>
+      <button class="chip" data-cat="Sports"><i class="fa-solid fa-futbol"></i> Sports</button>
+      <button class="chip" data-cat="Theatre"><i class="fa-solid fa-masks-theater"></i> Theatre</button>
+      <button class="chip" data-cat="Festivals"><i class="fa-solid fa-champagne-glasses"></i> Festivals</button>
+      <button class="chip" data-cat="Food"><i class="fa-solid fa-utensils"></i> Food</button>
+      <button class="chip" data-cat="Wellness"><i class="fa-solid fa-spa"></i> Wellness</button>
+    </div>
+
+    <p class="results-count" id="resultsCount"></p>
+    <div class="event-grid" id="exploreEventGrid"></div>
+    <div class="empty-state hidden" id="exploreEmptyState">
+      <i class="fa-solid fa-ghost"></i>
+      <h3>No events match your search</h3>
+      <p>Try a different city, category, or clear your filters.</p>
+    </div>
+  </section>
+
+  <!-- ===================== MY BOOKINGS ===================== -->
+  <section class="view" id="view-bookings">
+    <div class="section-heading"><h2><i class="fa-solid fa-ticket"></i> My bookings</h2></div>
+    <div class="booking-list" id="bookingList"></div>
+    <div class="empty-state hidden" id="bookingsEmptyState">
+      <i class="fa-solid fa-ticket"></i>
+      <h3>No bookings yet</h3>
+      <p>Explore events and book your first ticket.</p>
+      <button class="btn btn-primary" data-nav="explore">Explore events</button>
+    </div>
+  </section>
+
+  <!-- ===================== FAVOURITES ===================== -->
+  <section class="view" id="view-favourites">
+    <div class="section-heading"><h2><i class="fa-solid fa-heart"></i> Favourites</h2></div>
+    <div class="event-grid" id="favouritesGrid"></div>
+    <div class="empty-state hidden" id="favouritesEmptyState">
+      <i class="fa-regular fa-heart"></i>
+      <h3>No favourites saved</h3>
+      <p>Tap the heart icon on any event to save it here.</p>
+      <button class="btn btn-primary" data-nav="explore">Explore events</button>
+    </div>
+  </section>
+
+  <!-- ===================== EXPENSE SPLITTER ===================== -->
+  <section class="view" id="view-expenses">
+    <div class="section-heading"><h2><i class="fa-solid fa-calculator"></i> Trip expense splitter</h2></div>
+    <div class="expense-wrap">
+      <form class="glass-card expense-form" id="expenseForm">
+        <label>Hotel (₹)<input type="number" id="expHotel" min="0" step="1" value="0"></label>
+        <label>Food (₹)<input type="number" id="expFood" min="0" step="1" value="0"></label>
+        <label>Transport (₹)<input type="number" id="expTransport" min="0" step="1" value="0"></label>
+        <label>Other (₹)<input type="number" id="expOther" min="0" step="1" value="0"></label>
+        <label>Number of people<input type="number" id="expPeople" min="1" step="1" value="1" required></label>
+        <label>Note (optional)<input type="text" id="expNote" placeholder="e.g. Goa trip with college friends"></label>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-scale-balanced"></i> Calculate &amp; save split</button>
+      </form>
+
+      <div class="glass-card expense-result" id="expenseResult">
+        <i class="fa-solid fa-receipt"></i>
+        <p>Fill the form to see the per-person split summary here.</p>
+      </div>
+    </div>
+
+    <div class="section-heading"><h3>Split history</h3></div>
+    <div class="expense-history" id="expenseHistory"></div>
+    <div class="empty-state hidden" id="expenseEmptyState">
+      <i class="fa-solid fa-receipt"></i>
+      <h3>No expense splits saved</h3>
+      <p>Your saved trip expense splits will appear here.</p>
+    </div>
+  </section>
+
+  <!-- ===================== FIND TRAVEL BUDDY (route-based matching) ===================== -->
+  <section class="view" id="view-travelbuddy">
+    <div class="section-heading"><h2><i class="fa-solid fa-route"></i> Find a travel buddy</h2></div>
+    <p style="max-width:640px;">Post your route and travel date — anyone else headed the same way, even if you don't know them, can find you here and connect.</p>
+
+    <div class="expense-wrap">
+      <form class="glass-card expense-form" id="tripForm">
+        <label>From city<input type="text" id="tripFrom" required placeholder="e.g. Chandigarh"></label>
+        <label>To city<input type="text" id="tripTo" required placeholder="e.g. Manali"></label>
+        <label>Travel date<input type="date" id="tripDate" required></label>
+        <label>Note (optional)<input type="text" id="tripNote" placeholder="e.g. Leaving early morning, have space for 2"></label>
+        <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Post my trip</button>
+      </form>
+
+      <div class="glass-card expense-form">
+        <h3 style="margin-top:0;"><i class="fa-solid fa-magnifying-glass"></i> Search for travel buddies</h3>
+        <label>From city<input type="text" id="searchTripFrom" required placeholder="e.g. Chandigarh"></label>
+        <label>To city<input type="text" id="searchTripTo" required placeholder="e.g. Manali"></label>
+        <label>Around date (optional)<input type="date" id="searchTripDate"></label>
+        <button class="btn btn-outline btn-block" id="btnSearchTrips"><i class="fa-solid fa-magnifying-glass-location"></i> Search matches</button>
+      </div>
+    </div>
+
+    <div class="section-heading"><h3>Matching travellers</h3></div>
+    <div class="match-list" id="tripMatchList" style="max-height:none;"></div>
+    <div class="empty-state hidden" id="tripMatchEmptyState">
+      <i class="fa-solid fa-route"></i>
+      <h3>No matches yet</h3>
+      <p>Search a route above, or check back later — new trips are posted often.</p>
+    </div>
+
+    <div class="section-heading"><h3>My posted trips</h3></div>
+    <div class="expense-history" id="myTripsList"></div>
+    <div class="empty-state hidden" id="myTripsEmptyState">
+      <i class="fa-solid fa-route"></i>
+      <h3>You haven't posted a trip yet</h3>
+      <p>Post your route above so other travellers can find you.</p>
+    </div>
+  </section>
+
+  <!-- ===================== ADMIN DASHBOARD ===================== -->
+  <section class="view" id="view-admin">
+    <div class="section-heading"><h2><i class="fa-solid fa-user-shield"></i> Admin dashboard</h2></div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-admin-tab="events">Events</button>
+      <button class="admin-tab" data-admin-tab="bookings">All bookings</button>
+      <button class="admin-tab" data-admin-tab="users">All users</button>
+    </div>
+
+    <div class="admin-panel" id="adminPanel-events">
+      <button class="btn btn-primary" id="btnAddEvent"><i class="fa-solid fa-plus"></i> Add new event</button>
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="adminEventsTable">
+          <thead><tr><th>Image</th><th>Title</th><th>City</th><th>Date</th><th>Price</th><th>Seats</th><th>Actions</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-panel hidden" id="adminPanel-bookings">
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="adminBookingsTable">
+          <thead><tr><th>User</th><th>Event</th><th>Qty</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-panel hidden" id="adminPanel-users">
+      <div class="admin-table-wrap">
+        <table class="admin-table" id="adminUsersTable">
+          <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Role</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div>
+      <div class="brand footer-brand"><span class="brand-icon"><i class="fa-solid fa-plane-departure"></i></span> TripShare <span class="accent">India</span></div>
+      <p>Discover events across India, meet fellow travellers, and split your trip costs — all in one place.</p>
+      <div class="social-icons">
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="Twitter/X"><i class="fa-brands fa-x-twitter"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
+    <div>
+      <h4>Explore</h4>
+      <button data-nav="explore">All events</button>
+      <button data-nav="explore">Concerts</button>
+      <button data-nav="explore">Festivals</button>
+      <button data-nav="explore">Wellness retreats</button>
+    </div>
+    <div>
+      <h4>Account</h4>
+      <button id="footerLogin">Login</button>
+      <button id="footerSignup">Create account</button>
+      <button data-nav="bookings">My bookings</button>
+      <button data-nav="expenses">Expense splitter</button>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <a href="#">About us</a>
+      <a href="#">Contact</a>
+      <a href="#">Privacy policy</a>
+      <a href="#">Terms of use</a>
+    </div>
+  </div>
+  <p class="footer-bottom">© 2026 TripShare India. Built for travellers, by travellers.</p>
+</footer>
+
+<button class="scroll-top" id="scrollTopBtn" aria-label="Scroll to top"><i class="fa-solid fa-arrow-up"></i></button>
+
+<!-- ===================== AUTH MODAL (Login / Signup / Forgot) ===================== -->
+<div class="modal-overlay hidden" id="authModal">
+  <div class="modal glass-card auth-modal">
+    <button class="modal-close" data-close="authModal"><i class="fa-solid fa-xmark"></i></button>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-auth-tab="login">Login</button>
+      <button class="auth-tab" data-auth-tab="signup">Sign up</button>
+    </div>
+
+    <!-- LOGIN -->
+    <form class="auth-form" id="loginForm">
+      <div class="auth-logo"><i class="fa-solid fa-plane-departure"></i></div>
+      <h2>Welcome back</h2>
+      <p class="auth-sub">Log in to book events and find travel companions.</p>
+      <label>Email
+        <input type="email" id="loginEmail" required placeholder="you@example.com">
+      </label>
+      <label>Password
+        <div class="pass-wrap">
+          <input type="password" id="loginPassword" required placeholder="••••••••">
+          <button type="button" class="toggle-pass" data-target="loginPassword"><i class="fa-solid fa-eye"></i></button>
+        </div>
+      </label>
+      <button type="button" class="link-btn small" id="btnForgotPassword">Forgot password?</button>
+      <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+    </form>
+
+    <!-- SIGNUP -->
+    <form class="auth-form hidden" id="signupForm">
+      <div class="auth-logo"><i class="fa-solid fa-plane-departure"></i></div>
+      <h2>Create your account</h2>
+      <p class="auth-sub">Join thousands of Indian travellers.</p>
+      <label>Full name
+        <input type="text" id="suName" required placeholder="Riya Sharma">
+      </label>
+      <label>Email
+        <input type="email" id="suEmail" required placeholder="you@example.com">
+      </label>
+      <label>Phone number
+        <input type="tel" id="suPhone" required placeholder="10-digit mobile number" pattern="[0-9]{10}">
+      </label>
+      <label>City
+        <input type="text" id="suCity" required placeholder="e.g. Jaipur">
+      </label>
+      <label>Password
+        <div class="pass-wrap">
+          <input type="password" id="suPassword" required minlength="6" placeholder="At least 6 characters">
+          <button type="button" class="toggle-pass" data-target="suPassword"><i class="fa-solid fa-eye"></i></button>
+        </div>
+      </label>
+      <label>Confirm password
+        <div class="pass-wrap">
+          <input type="password" id="suConfirm" required minlength="6" placeholder="Re-enter password">
+          <button type="button" class="toggle-pass" data-target="suConfirm"><i class="fa-solid fa-eye"></i></button>
+        </div>
+      </label>
+      <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-user-plus"></i> Create account</button>
+    </form>
+
+    <!-- FORGOT PASSWORD -->
+    <form class="auth-form hidden" id="forgotForm">
+      <div class="auth-logo"><i class="fa-solid fa-key"></i></div>
+      <h2>Reset password</h2>
+      <p class="auth-sub">Enter your email to generate a demo reset token.</p>
+      <label>Email
+        <input type="email" id="fpEmail" required placeholder="you@example.com">
+      </label>
+      <div id="fpTokenBox" class="hidden"></div>
+      <label>New password
+        <input type="password" id="fpNewPassword" minlength="6" placeholder="At least 6 characters">
+      </label>
+      <button type="button" class="btn btn-outline btn-block" id="btnGenerateToken"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate reset token</button>
+      <button type="button" class="btn btn-primary btn-block" id="btnResetPassword"><i class="fa-solid fa-check"></i> Reset password</button>
+      <button type="button" class="link-btn small" data-auth-tab="login">Back to login</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== EVENT DETAILS MODAL ===================== -->
+<div class="modal-overlay hidden" id="eventModal">
+  <div class="modal glass-card event-modal" id="eventModalBody"></div>
+</div>
+
+<!-- ===================== BOOKING MODAL ===================== -->
+<div class="modal-overlay hidden" id="bookingModal">
+  <div class="modal glass-card booking-modal">
+    <button class="modal-close" data-close="bookingModal"><i class="fa-solid fa-xmark"></i></button>
+    <h2><i class="fa-solid fa-ticket"></i> Book tickets</h2>
+    <div id="bookingEventSummary" class="booking-event-summary"></div>
+    <label>Number of tickets
+      <input type="number" id="bookingQty" min="1" value="1">
+    </label>
+    <div class="booking-total">Total: <span id="bookingTotal">₹0</span></div>
+    <button class="btn btn-primary btn-block" id="btnConfirmBooking"><i class="fa-solid fa-circle-check"></i> Confirm booking</button>
+  </div>
+</div>
+
+<!-- ===================== PROFILE MODAL ===================== -->
+<div class="modal-overlay hidden" id="profileModal">
+  <div class="modal glass-card profile-modal">
+    <button class="modal-close" data-close="profileModal"><i class="fa-solid fa-xmark"></i></button>
+    <div class="profile-header">
+      <span class="avatar-initials big" id="profileAvatarBig">U</span>
+      <div>
+        <h2 id="profileNameHeading">User</h2>
+        <p id="profileEmailText">user@example.com</p>
+      </div>
+    </div>
+    <form id="profileForm">
+      <label>Full name<input type="text" id="pfName" required></label>
+      <label>Phone number<input type="tel" id="pfPhone" pattern="[0-9]{10}" required></label>
+      <label>City<input type="text" id="pfCity" required></label>
+      <label>Bio<textarea id="pfBio" maxlength="300" placeholder="Tell fellow travellers a bit about yourself"></textarea></label>
+      <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-floppy-disk"></i> Save changes</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== ADD/EDIT EVENT MODAL (admin) ===================== -->
+<div class="modal-overlay hidden" id="eventFormModal">
+  <div class="modal glass-card event-form-modal">
+    <button class="modal-close" data-close="eventFormModal"><i class="fa-solid fa-xmark"></i></button>
+    <h2 id="eventFormTitle">Add new event</h2>
+    <form id="eventForm">
+      <input type="hidden" id="efId">
+      <label>Title<input type="text" id="efTitle" required></label>
+      <label>Description<textarea id="efDescription" required></textarea></label>
+      <div class="form-row">
+        <label>City<input type="text" id="efCity" required></label>
+        <label>Venue<input type="text" id="efVenue" required></label>
+      </div>
+      <div class="form-row">
+        <label>Date<input type="date" id="efDate" required></label>
+        <label>Time<input type="time" id="efTime" required></label>
+      </div>
+      <div class="form-row">
+        <label>Category
+          <select id="efCategory" required>
+            <option value="Movies">Movies</option>
+            <option value="Concerts">Concerts</option>
+            <option value="Sports">Sports</option>
+            <option value="Theatre">Theatre</option>
+            <option value="Festivals">Festivals</option>
+            <option value="Food">Food</option>
+            <option value="Wellness">Wellness</option>
+          </select>
+        </label>
+        <label>Price (₹)<input type="number" id="efPrice" min="0" required></label>
+      </div>
+      <div class="form-row">
+        <label>Total seats<input type="number" id="efTotalSeats" min="1" required></label>
+        <label>Rating (0-5)<input type="number" id="efRating" min="0" max="5" step="0.1" value="4.5"></label>
+      </div>
+      <label>Organiser<input type="text" id="efOrganiser" required></label>
+      <label>Tags (comma separated)<input type="text" id="efTags" placeholder="music, live, weekend"></label>
+      <label>Image URL <span class="hint">(or upload a file below)</span><input type="text" id="efImageUrl" placeholder="https://images.unsplash.com/..."></label>
+      <label>Upload image<input type="file" id="efImageFile" accept="image/*"></label>
+      <button type="submit" class="btn btn-primary btn-block"><i class="fa-solid fa-floppy-disk"></i> Save event</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== CONNECT / MATCH MODAL ===================== -->
+<div class="modal-overlay hidden" id="matchModal">
+  <div class="modal glass-card match-modal">
+    <button class="modal-close" data-close="matchModal"><i class="fa-solid fa-xmark"></i></button>
+    <h2><i class="fa-solid fa-people-arrows"></i> Travel companions</h2>
+    <p class="auth-sub">People who also booked this event. Connect safely without sharing contact details publicly.</p>
+    <div id="matchList" class="match-list"></div>
+    <div class="safety-tips">
+      <h4><i class="fa-solid fa-shield-halved"></i> Safety tips before meeting anyone</h4>
+      <ul>
+        <li>Always meet in a public place for the first time.</li>
+        <li>Tell a friend or family member your plans.</li>
+        <li>Don't share OTPs, bank details, or home address.</li>
+        <li>Trust your instincts — leave if anything feels off.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== CONFIRM MODAL (generic) ===================== -->
+<div class="modal-overlay hidden" id="confirmModal">
+  <div class="modal glass-card confirm-modal">
+    <i class="fa-solid fa-triangle-exclamation confirm-icon"></i>
+    <h3 id="confirmTitle">Are you sure?</h3>
+    <p id="confirmMessage">This action cannot be undone.</p>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" id="confirmCancelBtn">Cancel</button>
+      <button class="btn btn-danger" id="confirmOkBtn">Yes, continue</button>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
