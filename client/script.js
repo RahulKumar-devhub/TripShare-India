@@ -6,8 +6,8 @@
    lives in MongoDB on the server.
    ========================================================= */
 
-const API_BASE = 'http://localhost:5000/api';
-const UPLOADS_BASE = 'http://localhost:5000';
+const API_BASE = 'https://tripshare-india.onrender.com/api';
+const UPLOADS_BASE = 'https://tripshare-india.onrender.com';
 
 const state = {
   token: localStorage.getItem('ts_token') || null,
